@@ -5,13 +5,16 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
-import { Button } from 'reactstrap';
+
 import matchSorter from 'match-sorter';
 import moment from 'moment';
 import ReactTable from '../Styled/Table';
 import TransactionView from '../View/TransactionView';
-import DatePicker from '../Styled/DatePicker';
-import MultiSelect from '../Styled/MultiSelect';
+
+import Timeago from 'react-timeago';
+import FontAwesome from 'react-fontawesome';
+
+import Identicon from 'react-identicons';
 
 import {
 	currentChannelType,
@@ -26,12 +29,15 @@ const styles = theme => {
 	const dark = type === 'dark';
 	return {
 		hash: {
+			textAlign: 'left',
 			'&, & li': {
 				overflow: 'visible !important'
 			}
 		},
 		partialHash: {
-			textAlign: 'center',
+			textOverflow: 'ellipsis',
+			overflowX: 'hidden',
+			textAlign: 'left',
 			position: 'relative !important',
 			'&:hover $lastFullHash': {
 				marginLeft: -400
@@ -97,7 +103,7 @@ export class Transactions extends Component {
 			filtered: [],
 			sorted: [],
 			err: false,
-			from: moment().subtract(1, 'days')
+			from: moment('19001201', 'YYYYMMDD')
 		};
 	}
 
@@ -189,7 +195,7 @@ export class Transactions extends Component {
 			to: moment(),
 			orgs: [],
 			err: false,
-			from: moment().subtract(1, 'days')
+			from: moment('19001201', 'YYYYMMDD')
 		});
 	};
 
@@ -203,30 +209,6 @@ export class Transactions extends Component {
 		const { classes } = this.props;
 		const columnHeaders = [
 			{
-				Header: 'Creator',
-				accessor: 'creator_msp_id',
-				filterMethod: (filter, rows) =>
-					matchSorter(
-						rows,
-						filter.value,
-						{ keys: ['creator_msp_id'] },
-						{ threshold: matchSorter.rankings.SIMPLEMATCH }
-					),
-				filterAll: true
-			},
-			{
-				Header: 'Channel Name',
-				accessor: 'channelname',
-				filterMethod: (filter, rows) =>
-					matchSorter(
-						rows,
-						filter.value,
-						{ keys: ['channelname'] },
-						{ threshold: matchSorter.rankings.SIMPLEMATCH }
-					),
-				filterAll: true
-			},
-			{
 				Header: 'Tx Id',
 				accessor: 'txhash',
 				className: classes.hash,
@@ -236,12 +218,15 @@ export class Transactions extends Component {
 							data-command="transaction-partial-hash"
 							className={classes.partialHash}
 							onClick={() => this.handleDialogOpen(row.value)}
-							href="#/transactions"
+							href="#/"
 						>
+							<span style={{ paddingRight: 30 }}>
+								<Identicon size={20} string={row.value} />
+							</span>
 							<div className={classes.fullHash} id="showTransactionId">
 								{row.value}
 							</div>{' '}
-							{row.value.slice(0, 6)}
+							{row.value.slice(0, 30)}
 							{!row.value ? '' : '... '}
 						</a>
 					</span>
@@ -255,21 +240,18 @@ export class Transactions extends Component {
 					),
 				filterAll: true
 			},
-			{
-				Header: 'Type',
-				accessor: 'type',
-				filterMethod: (filter, rows) =>
-					matchSorter(
-						rows,
-						filter.value,
-						{ keys: ['type'] },
-						{ threshold: matchSorter.rankings.SIMPLEMATCH }
-					),
-				filterAll: true
-			},
+
 			{
 				Header: 'Chaincode',
 				accessor: 'chaincodename',
+				Cell: row => (
+					<div>
+						<span style={{ paddingRight: 20 }}>
+							<FontAwesome name="circle-o" />
+						</span>
+						<span>{row.value}</span>
+					</div>
+				),
 				filterMethod: (filter, rows) =>
 					matchSorter(
 						rows,
@@ -277,11 +259,17 @@ export class Transactions extends Component {
 						{ keys: ['chaincodename'] },
 						{ threshold: matchSorter.rankings.SIMPLEMATCH }
 					),
+
 				filterAll: true
 			},
 			{
 				Header: 'Timestamp',
 				accessor: 'createdt',
+				Cell: row => (
+					<span>
+						<Timeago date={row.value} />
+					</span>
+				),
 				filterMethod: (filter, rows) =>
 					matchSorter(
 						rows,
@@ -300,100 +288,10 @@ export class Transactions extends Component {
 		const { dialogOpen } = this.state;
 		return (
 			<div>
-				<div className={`${classes.filter} row searchRow`}>
-					<div className={`${classes.filterElement} col-md-3`}>
-						<label className="label">From</label>
-						<DatePicker
-							id="from"
-							selected={this.state.from}
-							showTimeSelect
-							timeIntervals={5}
-							dateFormat="LLL"
-							onChange={date => {
-								if (date > this.state.to) {
-									this.setState({ err: true, from: date });
-								} else {
-									this.setState({ from: date, err: false });
-								}
-							}}
-						/>
-					</div>
-					<div className={`${classes.filterElement} col-md-3`}>
-						<label className="label">To</label>
-						<DatePicker
-							id="to"
-							selected={this.state.to}
-							showTimeSelect
-							timeIntervals={5}
-							dateFormat="LLL"
-							onChange={date => {
-								if (date > this.state.from) {
-									this.setState({ to: date, err: false });
-								} else {
-									this.setState({ err: true, to: date });
-								}
-							}}
-						>
-							<div className="validator ">
-								{this.state.err && (
-									<span className=" label border-red">
-										{' '}
-										From date should be less than To date
-									</span>
-								)}
-							</div>
-						</DatePicker>
-					</div>
-					<div className="col-md-2">
-						<MultiSelect
-							hasSelectAll
-							valueRenderer={this.handleCustomRender}
-							shouldToggleOnHover={false}
-							selected={this.state.orgs}
-							options={this.state.options}
-							selectAllLabel="All Orgs"
-							onSelectedChanged={value => {
-								this.handleMultiSelect(value);
-							}}
-						/>
-					</div>
-					<div className="col-md-2">
-						<Button
-							className={classes.searchButton}
-							color="success"
-							disabled={this.state.err}
-							onClick={async () => {
-								await this.handleSearch();
-							}}
-						>
-							Search
-						</Button>
-					</div>
-					<div className="col-md-1">
-						<Button
-							className={classes.filterButton}
-							color="primary"
-							onClick={() => {
-								this.handleClearSearch();
-							}}
-						>
-							Reset
-						</Button>
-					</div>
-					<div className="col-md-1">
-						<Button
-							className={classes.filterButton}
-							color="secondary"
-							onClick={() => this.setState({ filtered: [], sorted: [] })}
-						>
-							Clear Filter
-						</Button>
-					</div>
-				</div>
 				<ReactTable
 					data={transactionList}
 					columns={columnHeaders}
-					defaultPageSize={10}
+					defaultPageSize={1000}
 					list
 					filterable
 					sorted={this.state.sorted}
@@ -406,7 +304,7 @@ export class Transactions extends Component {
 					}}
 					minRows={0}
 					style={{ height: '750px' }}
-					showPagination={transactionList.length >= 5}
+					showPagination={true}
 				/>
 
 				<Dialog

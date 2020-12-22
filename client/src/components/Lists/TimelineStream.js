@@ -21,13 +21,13 @@ const styles = theme => {
 	const dark = type === 'dark';
 	return {
 		scrollable: {
-			height: 300,
+			height: 280,
 			overflowY: 'scroll'
 		},
 		text: {
 			color: dark ? '#ffffff' : undefined,
 			'& .badge-secondary': {
-				backgroundColor: '#5e548f'
+				backgroundColor: '#004a99'
 			}
 		},
 		event: {
@@ -83,14 +83,15 @@ export class TimelineStream extends Component {
 								key={item.title}
 								title={item.title}
 								icon={<FontAwesome name="cube" />}
-								iconColor="#0D3799"
+								iconColor="#c3ab41"
 								container="card"
 								className={classes.event}
 								titleStyle={{ fontWeight: 'bold' }}
-								style={{ width: '65%' }}
+								style={{ width: '100%' }}
 								cardHeaderStyle={{
-									backgroundColor: '#6283D0',
-									fontSize: '13pt'
+									backgroundColor: '#407dbf',
+									fontSize: '13pt',
+									borderRadius: 5
 								}}
 								contentStyle={{
 									backgroundColor: 'transparent'
@@ -106,8 +107,6 @@ export class TimelineStream extends Component {
 								}
 							>
 								<Typography variant="body1">
-									<b className={classes.text}> Channel Name:</b> {item.channelName}{' '}
-									<br />
 									<b className={classes.text}> Datahash:</b> {item.datahash} <br />
 									<b className={classes.text}> Number of Tx:</b> {item.txcount}
 								</Typography>

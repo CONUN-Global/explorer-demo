@@ -57,7 +57,7 @@ export class FabricGateway {
 	async initialize() {
 		this.fabricCaEnabled = this.fabricConfig.isFabricCaEnabled();
 		this.tlsEnable = this.fabricConfig.getTls();
-		this.enableAuthentication = this.fabricConfig.getEnableAuthentication();
+		this.enableAuthentication = false;
 		this.FSWALLET = 'wallet/' + this.fabricConfig.getNetworkId();
 
 		const explorerAdminId = this.fabricConfig.getAdminUser();

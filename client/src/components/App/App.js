@@ -10,7 +10,7 @@ import { HashRouter as Router, Route, Switch } from 'react-router-dom';
 import classnames from 'classnames';
 import Main from '../Main';
 import Header from '../Header';
-import Footer from '../Footer';
+
 import LandingPage from '../View/LandingPage';
 import ErrorMessage from '../ErrorMessage';
 import { chartSelectors } from '../../state/redux/charts';
@@ -19,15 +19,12 @@ import { authSelectors } from '../../state/redux/auth';
 
 import Login from '../Login';
 
-import Private from '../Route';
-
 /* istanbul ignore next */
-const styles = theme => {
-	const { type } = theme.palette;
-	const dark = type === 'dark';
+const styles = () => {
 	return {
 		app: {
-			backgroundColor: dark ? 'rgb(36, 32, 54)' : 'rgb(240, 245, 249)',
+			backgroundColor: '#f5f7fd',
+
 			position: 'absolute',
 			top: 0,
 			left: 0,
@@ -69,7 +66,7 @@ export class App extends Component {
 		const className = classnames(mode === 'dark' && 'dark-theme', classes.app);
 		return (
 			<div className={className}>
-				{auth && <Header refresh={this.refreshComponent} />}
+				<Header refresh={this.refreshComponent} />
 				{error && <ErrorMessage message={error} />}
 				<Router>
 					<Switch>
@@ -78,10 +75,9 @@ export class App extends Component {
 							path="/login"
 							render={routeprops => <Login {...routeprops} />}
 						/>
-						<Private path="/" render={routeprops => <Main {...routeprops} />} />
+						<Route path="/" render={routeprops => <Main {...routeprops} />} />
 					</Switch>
 				</Router>
-				{auth && <Footer />}
 			</div>
 		);
 	}

@@ -65,10 +65,6 @@ export class BlockView extends Component {
 								<Table striped hover responsive className="table-striped">
 									<tbody>
 										<tr>
-											<th>Channel name:</th>
-											<td>{blockHash.channelname}</td>
-										</tr>
-										<tr>
 											<th>Block Number</th>
 											<td>{blockHash.blocknum}</td>
 										</tr>

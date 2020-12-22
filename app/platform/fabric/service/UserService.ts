@@ -53,11 +53,11 @@ export class UserService {
 			return false;
 		}
 
-		const client = clientObj.instance;
-		const fabricConfig = client.fabricGateway.fabricConfig;
-		enableAuth = fabricConfig.getEnableAuthentication();
+		// const client = clientObj.instance;
+		// const fabricConfig = client.fabricGateway.fabricConfig;
+		// enableAuth = fabricConfig.getEnableAuthentication();
 		// Skip authentication, if set to false in connection profile, key: enableAuthentication
-		if (!enableAuth) {
+		if (enableAuth == false) {
 			logger.info('Skip authentication');
 			return true;
 		}
