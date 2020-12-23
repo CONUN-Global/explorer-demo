@@ -114,7 +114,7 @@ export class Blocks extends Component {
 			err: false,
 			search: false,
 			to: moment(),
-			orgs: [],
+			orgs: ['Org1MSP', 'Org2MSP'],
 			options: [],
 			filtered: [],
 			sorted: [],
@@ -124,6 +124,7 @@ export class Blocks extends Component {
 	}
 
 	componentDidMount() {
+		console.log(new Date(this.state.from).toString());
 		const { blockList } = this.props;
 		const selection = {};
 		blockList.forEach(element => {
@@ -166,19 +167,17 @@ export class Blocks extends Component {
 		return selected.join(',');
 	}
 
-	searchBlockList = async channel => {
-		let query = `from=${new Date(this.state.from).toString()}&&to=${new Date(
-			this.state.to
-		).toString()}`;
-		for (let i = 0; i < this.state.orgs.length; i++) {
-			query += `&&orgs=${this.state.orgs[i]}`;
-		}
-		let channelhash = this.props.currentChannel;
-		if (channel !== undefined) {
-			channelhash = channel;
-		}
-		await this.props.getBlockListSearch(channelhash, query);
-	};
+	// searchBlockList = async channel => {
+	// 	let query = `from=${new Date(this.state.from).toString()}&&to=${new Date(
+	// 		this.state.to
+	// 	).toString()}`;
+	// 	for (let i = 0; i < this.state.orgs.length; i++) {
+	// 		query += `&&orgs=${this.state.orgs[i]}`;
+	// 	}
+	// 	let channelhash = "fdfd720dc97577884b7d9fc7a5a347da6e61f7a5f80f9f6a6be982764554a884";
+	// 	console.log(query)
+	// 	await this.props.getBlockListSearch(channelhash, query);
+	// };
 
 	handleDialogOpen = async tid => {
 		const { getTransaction, currentChannel } = this.props;
@@ -200,7 +199,7 @@ export class Blocks extends Component {
 		}
 		this.interval = setInterval(() => {
 			this.searchBlockList();
-		}, 60000);
+		}, 600);
 		await this.searchBlockList();
 		this.setState({ search: true });
 	};
@@ -212,9 +211,9 @@ export class Blocks extends Component {
 		this.setState({
 			search: false,
 			to: moment(),
-			orgs: [],
+			orgs: ['Org1MSP', 'Org2MSP'],
 			err: false,
-			from: moment('20201201', 'YYYYMMDD')
+			from: moment('19991201', 'YYYYMMDD')
 		});
 	};
 

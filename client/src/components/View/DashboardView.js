@@ -203,6 +203,7 @@ export class DashboardView extends Component {
 					<h1>
 						Please verify your network configuration, database configuration and try
 						again
+						{window.location.reload(true)}
 					</h1>
 				</div>
 			);

@@ -12,7 +12,7 @@ import { Badge } from 'reactstrap';
 import Timeago from 'react-timeago';
 import find from 'lodash/find';
 import BlockView from '../View/BlockView';
-import blockOpen from '../../static/images/blockOpen.png';
+import blockOpen from '../../static/images/icon5_w.png';
 import { blockListType, notificationsType } from '../types';
 
 /* istanbul ignore next */
@@ -87,7 +87,12 @@ export class TimelineStream extends Component {
 								container="card"
 								className={classes.event}
 								titleStyle={{ fontWeight: 'bold' }}
-								style={{ width: '100%' }}
+								style={{
+									width: '100%',
+									display: 'flex',
+									flexDirection: 'column',
+									justifyContent: 'center'
+								}}
 								cardHeaderStyle={{
 									backgroundColor: '#407dbf',
 									fontSize: '13pt',
@@ -102,7 +107,16 @@ export class TimelineStream extends Component {
 										href="#/"
 										onClick={() => this.handleDialogOpenBlockHash(item.blockhash)}
 									>
-										<img src={blockOpen} alt="View Blocks" className={classes.open} />
+										<FontAwesome
+											style={{
+												color: 'white',
+												textAlign: 'center',
+												padding: 5,
+												borderRadius: 5,
+												border: '2px dotted white'
+											}}
+											name="cube"
+										/>
 									</a>
 								}
 							>
