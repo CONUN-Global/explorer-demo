@@ -135,6 +135,7 @@ export class CRUDService {
 			values.push(orgs);
 			byOrgs = ' and creator_msp_id = ANY($5)';
 		}
+		console.log(byOrgs);
 
 		logger.debug('getBlockAndTxList.byOrgs ', byOrgs);
 
@@ -147,7 +148,7 @@ export class CRUDService {
 									order by blocks.blocknum desc)  a where  a.txhash IS NOT NULL`;
 
 		logger.debug('sqlBlockTxList ', sqlBlockTxList);
-
+		console.log(this.sql.getRowsBySQlQuery(sqlBlockTxList, values));
 		return this.sql.getRowsBySQlQuery(sqlBlockTxList, values);
 	}
 

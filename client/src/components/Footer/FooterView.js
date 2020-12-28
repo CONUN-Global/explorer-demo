@@ -11,17 +11,28 @@ const styles = theme => {
 	const { type } = theme.palette;
 	const dark = type === 'dark';
 	return {
-		root: {
-			margin: '2%'
-		},
 		footer: {
-			backgroundColor: dark ? '#5e558e' : '#e8e8e8',
-			color: dark ? '#ffffff' : undefined,
+			backgroundColor: '#004a99',
+			color: '#ffffff',
 			textAlign: 'center',
+			paddingTop: 10,
 			position: 'fixed',
+			width: '100vw',
+			height: 50,
 			left: 0,
 			right: 0,
-			bottom: 0
+			bottom: 0,
+
+			display: 'flex',
+			justifyContent: 'flex-end'
+		},
+		footerCell: {
+			paddingRight: 20,
+			paddingLeft: 20
+		},
+		footerLink: {
+			textDecoration: 'none',
+			color: '#fff'
 		}
 	};
 };
@@ -29,12 +40,14 @@ const styles = theme => {
 const FooterView = ({ classes }) => (
 	<div className={classes.root}>
 		<div>
-			<div className={classes.footer}>
-				{'Hyperledger Explorer Client Version: '}
-				{clientJson.version}
-				&emsp;
-				{'Fabric Compatibility: '} {FabricVersion.map(v => v)}
-			</div>
+			{/* <div className={classes.footer}>
+				<div className={classes.footerCell}>
+				<a className={classes.footerLink} href="mailto:conuncs@conun.co.kr">conuncs@conun.co.kr</a>  /   1 Raffles Place #44-01A One Raffles Place Singapore
+				</div>
+				<div className={classes.footerCell}>
+					ⓒ 2020 CONUN, All Rights Reserved
+				</div>
+			</div> */}
 		</div>
 	</div>
 );

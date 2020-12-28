@@ -57,7 +57,7 @@
 			"tlsCACerts": {
 				"path": "/home/conun/conun_network/blockchain/v1/conun_blockchain_network/artifacts/channel/crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt"
 			},
-			"url": "grpcs://localhost:7051",
+			"url": "grpc://localhost:7051",
 			"grpcOptions": {
 				"ssl-target-name-override": "peer0.org1.example.com"
 			}

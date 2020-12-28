@@ -11,7 +11,7 @@ const blockList = channel => dispatch =>
 			if (resp.status === 500) {
 				dispatch(
 					actions.getErroMessage(
-						'500 Internal Server Error: The server has encountered an internal error and unable to complete your request'
+						'500 Internal Server Error: The server has encountered an internal error and IS unable to complete your request'
 					)
 				);
 			} else if (resp.status === 400) {

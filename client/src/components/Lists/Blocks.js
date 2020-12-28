@@ -5,7 +5,7 @@
 import React, { Component } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
-import { Button } from 'reactstrap';
+
 import matchSorter from 'match-sorter';
 import find from 'lodash/find';
 import moment from 'moment';
@@ -13,8 +13,7 @@ import { isNull } from 'util';
 import ReactTable from '../Styled/Table';
 import BlockView from '../View/BlockView';
 import TransactionView from '../View/TransactionView';
-import MultiSelect from '../Styled/MultiSelect';
-import DatePicker from '../Styled/DatePicker';
+
 import {
 	blockListType,
 	currentChannelType,
@@ -27,6 +26,15 @@ const styles = theme => {
 	const { type } = theme.palette;
 	const dark = type === 'dark';
 	return {
+		titleBar: {
+			width: '100%',
+			marginTop: 80,
+			marginBottom: 80,
+			display: 'flex',
+			justifyContent: 'center',
+			alignItems: 'center',
+			textAlign: 'center'
+		},
 		hash: {
 			'&, & li, & ul': {
 				overflow: 'visible !important'
@@ -106,16 +114,17 @@ export class Blocks extends Component {
 			err: false,
 			search: false,
 			to: moment(),
-			orgs: [],
+			orgs: ['Org1MSP', 'Org2MSP'],
 			options: [],
 			filtered: [],
 			sorted: [],
-			from: moment().subtract(1, 'days'),
+			from: moment('19991201', 'YYYYMMDD'),
 			blockHash: {}
 		};
 	}
 
 	componentDidMount() {
+		console.log(new Date(this.state.from).toString());
 		const { blockList } = this.props;
 		const selection = {};
 		blockList.forEach(element => {
@@ -158,19 +167,17 @@ export class Blocks extends Component {
 		return selected.join(',');
 	}
 
-	searchBlockList = async channel => {
-		let query = `from=${new Date(this.state.from).toString()}&&to=${new Date(
-			this.state.to
-		).toString()}`;
-		for (let i = 0; i < this.state.orgs.length; i++) {
-			query += `&&orgs=${this.state.orgs[i]}`;
-		}
-		let channelhash = this.props.currentChannel;
-		if (channel !== undefined) {
-			channelhash = channel;
-		}
-		await this.props.getBlockListSearch(channelhash, query);
-	};
+	// searchBlockList = async channel => {
+	// 	let query = `from=${new Date(this.state.from).toString()}&&to=${new Date(
+	// 		this.state.to
+	// 	).toString()}`;
+	// 	for (let i = 0; i < this.state.orgs.length; i++) {
+	// 		query += `&&orgs=${this.state.orgs[i]}`;
+	// 	}
+	// 	let channelhash = "fdfd720dc97577884b7d9fc7a5a347da6e61f7a5f80f9f6a6be982764554a884";
+	// 	console.log(query)
+	// 	await this.props.getBlockListSearch(channelhash, query);
+	// };
 
 	handleDialogOpen = async tid => {
 		const { getTransaction, currentChannel } = this.props;
@@ -192,7 +199,7 @@ export class Blocks extends Component {
 		}
 		this.interval = setInterval(() => {
 			this.searchBlockList();
-		}, 60000);
+		}, 600);
 		await this.searchBlockList();
 		this.setState({ search: true });
 	};
@@ -204,9 +211,9 @@ export class Blocks extends Component {
 		this.setState({
 			search: false,
 			to: moment(),
-			orgs: [],
+			orgs: ['Org1MSP', 'Org2MSP'],
 			err: false,
-			from: moment().subtract(1, 'days')
+			from: moment('19991201', 'YYYYMMDD')
 		});
 	};
 
@@ -247,18 +254,6 @@ export class Blocks extends Component {
 			width: 150
 		},
 		{
-			Header: 'Channel Name',
-			accessor: 'channelname',
-			filterMethod: (filter, rows) =>
-				matchSorter(
-					rows,
-					filter.value,
-					{ keys: ['channelname'] },
-					{ threshold: matchSorter.rankings.SIMPLEMATCH }
-				),
-			filterAll: true
-		},
-		{
 			Header: 'Number of Tx',
 			accessor: 'txcount',
 			filterMethod: (filter, rows) =>
@@ -281,7 +276,7 @@ export class Blocks extends Component {
 						<div className={classes.fullHash} id="showTransactionId">
 							{row.value}
 						</div>{' '}
-						{row.value.slice(0, 6)} {!row.value ? '' : '... '}
+						{row.value.slice(0, 20)} {!row.value ? '' : '... '}
 					</ul>{' '}
 				</span>
 			),
@@ -309,7 +304,7 @@ export class Blocks extends Component {
 						<div className={classes.fullHash} id="showTransactionId">
 							{row.value}
 						</div>{' '}
-						{row.value.slice(0, 6)} {!row.value ? '' : '... '}
+						{row.value.slice(0, 20)} {!row.value ? '' : '... '}
 					</a>{' '}
 				</span>
 			),
@@ -336,7 +331,7 @@ export class Blocks extends Component {
 						<div className={classes.fullHash} id="showTransactionId">
 							{row.value}
 						</div>{' '}
-						{row.value.slice(0, 6)} {!row.value ? '' : '... '}
+						{row.value.slice(0, 10)} {!row.value ? '' : '... '}
 					</ul>{' '}
 				</span>
 			),
@@ -374,7 +369,7 @@ export class Blocks extends Component {
 										<div className={classes.lastFullHash} id="showTransactionId">
 											{tid}
 										</div>{' '}
-										{tid.slice(0, 6)} {!tid ? '' : '... '}
+										{tid.slice(0, 20)} {!tid ? '' : '... '}
 									</a>
 								</li>
 						  ))
@@ -413,96 +408,6 @@ export class Blocks extends Component {
 		const { blockHash, dialogOpen, dialogOpenBlockHash } = this.state;
 		return (
 			<div>
-				<div className={`${classes.filter} row searchRow`}>
-					<div className={`${classes.filterElement} col-md-3`}>
-						<label className="label">From</label>
-						<DatePicker
-							id="from"
-							selected={this.state.from}
-							showTimeSelect
-							timeIntervals={5}
-							dateFormat="LLL"
-							onChange={date => {
-								if (date > this.state.to) {
-									this.setState({ err: true, from: date });
-								} else {
-									this.setState({ from: date, err: false });
-								}
-							}}
-						/>
-					</div>
-					<div className={`${classes.filterElement} col-md-3`}>
-						<label className="label">To</label>
-						<DatePicker
-							id="to"
-							selected={this.state.to}
-							showTimeSelect
-							timeIntervals={5}
-							dateFormat="LLL"
-							onChange={date => {
-								if (date > this.state.from) {
-									this.setState({ to: date, err: false });
-								} else {
-									this.setState({ err: true, to: date });
-								}
-							}}
-						>
-							<div className="validator ">
-								{this.state.err && (
-									<span className=" label border-red">
-										{' '}
-										From date should be less than To date
-									</span>
-								)}
-							</div>
-						</DatePicker>
-					</div>
-					<div className="col-md-2">
-						<MultiSelect
-							hasSelectAll
-							valueRenderer={this.handleCustomRender}
-							shouldToggleOnHover={false}
-							selected={this.state.orgs}
-							options={this.state.options}
-							selectAllLabel="All Orgs"
-							onSelectedChanged={value => {
-								this.handleMultiSelect(value);
-							}}
-						/>
-					</div>
-					<div className="col-md-2">
-						<Button
-							className={classes.searchButton}
-							color="success"
-							disabled={this.state.err}
-							onClick={async () => {
-								await this.handleSearch();
-							}}
-						>
-							Search
-						</Button>
-					</div>
-					<div className="col-md-1">
-						<Button
-							className={classes.filterButton}
-							color="primary"
-							onClick={() => {
-								this.handleClearSearch();
-							}}
-						>
-							Reset
-						</Button>
-					</div>
-					<div className="col-md-1">
-						<Button
-							className={classes.filterButton}
-							color="secondary"
-							onClick={() => this.setState({ filtered: [], sorted: [] })}
-						>
-							Clear Filter
-						</Button>
-					</div>
-				</div>
 				<ReactTable
 					data={blockList}
 					columns={this.reactTableSetup(classes)}

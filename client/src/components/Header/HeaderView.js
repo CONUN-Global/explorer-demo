@@ -19,13 +19,14 @@ import Dialog from '@material-ui/core/Dialog';
 import Loader from 'react-loader-spinner';
 import Select from '../Styled/Select';
 import NotificationsPanel from '../Panels/NotificationsPanel';
-import Logo from '../../static/images/Explorer_Logo.svg';
+import Logo from '../../static/images/Logo.png';
 import AdminPanel from '../Panels/AdminPanel';
 import { chartOperations, chartSelectors } from '../../state/redux/charts';
 import { tableOperations, tableSelectors } from '../../state/redux/tables';
 import { themeSelectors } from '../../state/redux/theme';
 import UsersPanal from '../UsersPanal/UsersPanal';
 import { authOperations } from '../../state/redux/auth';
+import './flashingIcon.css';
 
 // import Enroll from '../Enroll';
 
@@ -46,6 +47,7 @@ import {
 	getTransactionPerMinType,
 	refreshType
 } from '../types';
+// import { borderRadius } from 'react-select/src/theme';
 
 const {
 	blockPerHour,
@@ -73,43 +75,50 @@ const { channelsSelector } = tableSelectors;
 const styles = theme => {
 	const { type } = theme.palette;
 	const dark = type === 'dark';
-	const darkNavbar = dark && {
-		background: 'linear-gradient(to right, rgb(236, 233, 252), #4d4575)'
-	};
+
 	return {
-		logo: {
-			width: 260,
-			height: 50,
-			'@media (max-width: 1415px) and (min-width: 990px)': {
-				width: 200,
-				height: 40
-			}
+		logoDiv: {
+			display: 'flex',
+			alignItems: 'center'
+		},
+		logoTxt: {
+			color: '#fff',
+			fontSize: 30,
+			fontWeight: 500,
+			marginLeft: 10
+		},
+		logoImg: {
+			height: '35px',
+			margin: '10',
+			marginTop: '13'
 		},
 		navbarHeader: {
-			backgroundColor: '#e8e8e8',
-			...darkNavbar
+			backgroundColor: '#004a99'
 		},
 		tab: {
-			color: dark ? '#242036' : '#000000',
+			color: '#fff',
 			fontSize: '1.05rem',
-			fontWeight: 800,
+			fontWeight: 600,
 			height: 50,
-			margin: 10,
+			margin: 20,
+			borderRadius: 10,
 			'&:hover': {
-				color: dark ? '#242036' : '#000000'
+				color: '#d6e0ff',
+				textDecoration: 'none'
 			},
 			'@media (max-width: 1415px) and (min-width: 990px)': {
 				fontSize: '0.85rem'
 			}
 		},
 		activeTab: {
-			color: '#ffffff',
-			backgroundColor: dark ? '#453e68' : '#58c5c2',
+			color: '#fff',
+			backgroundColor: '#66b0ff',
 			height: 60,
 			marginTop: 20,
 			padding: 10,
 			'&:hover': {
-				color: '#ffffff'
+				color: '#fff',
+				textDecoration: 'none'
 			},
 			'@media (max-width: 1415px) and (min-width: 990px)': {
 				padding: '8%'
@@ -229,18 +238,7 @@ export class HeaderView extends Component {
 		const { channels: channelArr, currentChannel } = this.props;
 		const arr = [];
 		let selectedValue = {};
-		channelArr.forEach(element => {
-			if (element.channel_genesis_hash === currentChannel) {
-				selectedValue = {
-					value: element.channel_genesis_hash,
-					label: element.channelname
-				};
-			}
-			arr.push({
-				value: element.channel_genesis_hash,
-				label: element.channelname
-			});
-		});
+
 		this.setState({
 			currentChannel: currentChannel,
 			channels: arr,
@@ -478,11 +476,8 @@ export class HeaderView extends Component {
 		} = this.state;
 		const links = [
 			{ to: '/', label: 'DASHBOARD', exact: true },
-			{ to: '/network', label: 'NETWORK' },
-			{ to: '/blocks', label: 'BLOCKS' },
-			{ to: '/transactions', label: 'TRANSACTIONS' },
-			{ to: '/chaincodes', label: 'CHAINCODES' },
-			{ to: '/channels', label: 'CHANNELS' }
+			// { to: '/blocks', label: 'BLOCKS' },
+			{ to: '/chaincodes', label: 'CHAINCODES' }
 		];
 
 		return (
@@ -494,18 +489,20 @@ export class HeaderView extends Component {
 					onMessage={this.handleData.bind(this)}
 					reconnect
 				/>
+
 				<Router>
 					<div>
 						<Navbar className={classes.navbarHeader} expand="lg" fixed="top">
 							<NavbarBrand href="/">
-								{' '}
-								{/* <img src={Logo} className={classes.logo} alt="Hyperledger Logo" /> */}
-								<img
-									src="https://conun.io/img/conun_logo_big.png"
-									className={classes.logo}
-									alt="Hyperledger Logo"
-								/>
+								<div className={classes.logoDiv}>
+									<span className={classes.logoImgSpan}>
+										<img className={classes.logoImg} src={Logo} alt="Conun Logo" />
+									</span>
+								</div>
 							</NavbarBrand>
+							<div className="network_status_cell">
+								Catalina TEST Network<span className="network_status_icon"></span>
+							</div>
 							<NavbarToggler onClick={this.toggle}>
 								<FontAwesome name="bars" className={classes.toggleIcon} />
 							</NavbarToggler>
@@ -528,61 +525,6 @@ export class HeaderView extends Component {
 											</NavLink>
 										</li>
 									))}
-									<div className={classes.adminButton}>
-										<Select
-											className={classes.channel}
-											placeholder="Select Channel..."
-											required
-											name="form-field-name"
-											isLoading={isLoading}
-											value={selectedChannel}
-											onChange={this.handleChange}
-											onFocus={this.reloadChannels.bind(this)}
-											options={stateChannels}
-										/>
-									</div>
-									{
-										<div className={classes.adminButton}>
-											<FontAwesome
-												name="bell"
-												data-command="bell"
-												className={classes.bell}
-												onClick={() => this.handleDrawOpen('notifyDrawer')}
-											/>
-											<Badge badgeContent={notifyCount} color="primary" />
-										</div>
-									}
-									{/*
-              //Use when Admin functionality is required
-              <div className={classes.adminButton}>
-                <FontAwesome
-                  name='cog'
-                  className='cog'
-                  onClick={() => this.handleDrawOpen('adminDrawer')}
-                />
-              </div> */}
-									<div className={`${classes.adminButton} ${classes.themeSwitch}`}>
-										<FontAwesome name="sun-o" className={classes.sunIcon} />
-										<Switch
-											onChange={() => this.handleThemeChange(mode)}
-											checked={dark}
-										/>
-										<FontAwesome name="moon-o" className={classes.moonIcon} />
-									</div>
-									<div className={classNames(classes.adminButton, classes.user)}>
-										<FontAwesome
-											name="user-plus"
-											className={classes.userIcon}
-											onClick={() => this.registerOpen()}
-										/>
-									</div>
-									<div className={classNames(classes.adminButton, classes.logoutk)}>
-										<FontAwesome
-											name="sign-out"
-											className={classes.logout}
-											onClick={() => this.logout()}
-										/>
-									</div>
 								</Nav>
 							</Collapse>
 						</Navbar>

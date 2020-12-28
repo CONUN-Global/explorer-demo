@@ -9,19 +9,7 @@ import { connect } from 'react-redux';
 
 import { withStyles } from '@material-ui/core/styles';
 
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import TextField from '@material-ui/core/TextField';
 import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import MenuItem from '@material-ui/core/MenuItem';
-
-import ListIcon from '@material-ui/icons/List';
-import PersonIcon from '@material-ui/icons/Person';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
 import { shape, string } from 'prop-types';
 
@@ -91,8 +79,8 @@ export class Login extends Component {
 			},
 			network: {
 				error: null,
-				value: '',
-				id: ''
+				value: 'My first network',
+				id: 'first-network'
 			},
 			autoLoginAttempted: false,
 			error: '',
@@ -125,6 +113,7 @@ export class Login extends Component {
 		};
 		if (name === 'network') {
 			const { networks } = this.state;
+			console.log(networks);
 			newState.authEnabled = (
 				networks.find(n => n.name === value) || {}
 			).authEnabled;
@@ -153,6 +142,15 @@ export class Login extends Component {
 			return true;
 		}
 	}
+	doSelfLogin = async () => {
+		const { user, password, network } = this.state;
+
+		await this.performLogin({
+			user: user.value,
+			password: password.value,
+			network: network.id
+		});
+	};
 
 	submitForm = async e => {
 		e.preventDefault();
@@ -165,6 +163,10 @@ export class Login extends Component {
 			network: network.id
 		});
 	};
+
+	componentWillMount() {
+		this.doSelfLogin();
+	}
 
 	async componentDidUpdate() {
 		const { networks, autoLoginAttempted } = this.state;
@@ -187,139 +189,12 @@ export class Login extends Component {
 	}
 
 	render() {
-		const {
-			info,
-			user,
-			password,
-			network,
-			networks,
-			authEnabled,
-			isLoading
-		} = this.state;
-		const { classes, error } = this.props;
+		const { classes } = this.props;
 
 		return (
 			<div className={classes.container}>
 				<Paper className={classes.paper}>
-					<Avatar className={classes.avatar}>
-						<LockOutlinedIcon />
-					</Avatar>
-					<Typography component="h5" variant="headline">
-						Sign in
-					</Typography>
-					<form className={classes.form} onSubmit={this.submitForm}>
-						<FormControl margin="normal" required fullWidth>
-							<TextField
-								required
-								fullWidth
-								select
-								id="network"
-								name="network"
-								label="Network"
-								disabled={isLoading}
-								value={network.value}
-								onChange={e => this.handleChange(e)}
-								margin="normal"
-								InputProps={{
-									startAdornment: (
-										<InputAdornment position="start">
-											<ListIcon />
-										</InputAdornment>
-									),
-									shrink: 'true'
-								}}
-							>
-								{networks.map(item => (
-									<MenuItem key={item.name} value={item.name}>
-										{item.name}
-									</MenuItem>
-								))}
-							</TextField>
-							{network.error && (
-								<FormHelperText id="component-error-text" error>
-									{network.error}
-								</FormHelperText>
-							)}
-						</FormControl>
-						{authEnabled && (
-							<FormControl margin="normal" required fullWidth>
-								<TextField
-									error={!!user.error}
-									required
-									fullWidth
-									id="user"
-									name="user"
-									label="User"
-									disabled={isLoading}
-									value={user.value}
-									onChange={e => this.handleChange(e)}
-									margin="normal"
-									InputProps={{
-										startAdornment: (
-											<InputAdornment position="start">
-												<PersonIcon />
-											</InputAdornment>
-										),
-										shrink: 'true'
-									}}
-								/>
-								{user.error && (
-									<FormHelperText id="component-error-text" error>
-										{user.error}
-									</FormHelperText>
-								)}
-							</FormControl>
-						)}
-						{authEnabled && (
-							<FormControl margin="normal" required fullWidth>
-								<TextField
-									required
-									fullWidth
-									error={!!password.error}
-									id="password"
-									type="password"
-									name="password"
-									label="Password"
-									disabled={isLoading}
-									value={password.value}
-									onChange={e => this.handleChange(e)}
-									margin="normal"
-									InputProps={{
-										startAdornment: (
-											<InputAdornment position="start">
-												<LockOutlinedIcon />
-											</InputAdornment>
-										),
-										shrink: 'true'
-									}}
-								/>
-								{password.error && (
-									<FormHelperText id="component-error-text" error>
-										{password.error}
-									</FormHelperText>
-								)}
-							</FormControl>
-						)}
-						{error && (
-							<FormHelperText id="component-error-text" error>
-								{error}
-							</FormHelperText>
-						)}
-						{info && (
-							<FormHelperText id="component-error-text" className={classes.errortext}>
-								{info.message}
-							</FormHelperText>
-						)}
-						<Button
-							type="submit"
-							fullWidth
-							variant="contained"
-							color="primary"
-							className={classes.submit}
-						>
-							{authEnabled ? 'Sign in' : 'Connect'}
-						</Button>
-					</form>
+					<div>You have been automatically signed in...</div>
 				</Paper>
 			</div>
 		);

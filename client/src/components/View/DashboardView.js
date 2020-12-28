@@ -7,11 +7,12 @@ import { withStyles } from '@material-ui/core/styles';
 import { Row, Col } from 'reactstrap';
 import FontAwesome from 'react-fontawesome';
 import Card from '@material-ui/core/Card';
-import Avatar from '@material-ui/core/Avatar';
+import TitleBar from '../TitleBar/TitleBar';
 import ChartStats from '../Charts/ChartStats';
-import PeersHealth from '../Lists/PeersHealth';
+
 import TimelineStream from '../Lists/TimelineStream';
-import OrgPieChart from '../Charts/OrgPieChart';
+import Transactions from '../Lists/Transactions';
+
 import {
 	blockListType,
 	dashStatsType,
@@ -24,31 +25,43 @@ const styles = theme => {
 	const { type } = theme.palette;
 	const dark = type === 'dark';
 	return {
+		titleBar: {
+			width: '100%',
+			marginTop: 80,
+			marginBottom: 15,
+			display: 'flex',
+			justifyContent: 'center',
+			alignItems: 'center',
+			textAlign: 'center'
+		},
+		topBar: {
+			marginTop: 30,
+			marginBottom: 15
+		},
 		background: {
-			backgroundColor: dark ? 'rgb(36, 32, 54)' : '#f0f5f9'
+			backgroundColor: '#f5f7fd'
 		},
 		view: {
-			paddingTop: 85,
+			paddingTop: 20,
 			paddingLeft: 0,
 			width: '80%',
 			marginLeft: '10%',
-			marginRight: '10%'
+			marginRight: '10%',
+			marginBottom: 40
 		},
 		blocks: {
-			height: 175,
-			marginBottom: 20,
 			backgroundColor: dark ? '#453e68' : '#ffffff',
-			boxShadow: dark ? '1px 2px 2px rgb(215, 247, 247)' : undefined
+			boxShadow:
+				' 0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12)',
+			marginBottom: 20,
+			marginTop: 20,
+			borderRadius: 10
 		},
 		count: {
-			marginTop: '55%',
+			textAlign: 'center',
 			color: dark ? '#ffffff' : undefined
 		},
 		statistic: {
-			display: 'block',
-			float: 'left',
-			height: '100%',
-			width: '25%',
 			textAlign: 'center',
 			fontSize: '18pt',
 			color: dark ? '#ffffff' : '#000000'
@@ -63,10 +76,30 @@ const styles = theme => {
 				position: 'relative'
 			}
 		},
-		avatar: {
+		dashColumnHeader: {
+			fontSize: 20,
+			fontWeight: 400
+		},
+		dashColumn: {
+			display: 'flex',
 			justifyContent: 'center',
-			marginLeft: '60%',
-			marginTop: '65%'
+			alignItems: 'center'
+		},
+		dataSpan: {
+			fontSize: 30
+		},
+
+		iconColumn: {
+			display: 'flex',
+			justifyContent: 'center',
+			alignItems: 'center',
+			fontSize: 30,
+
+			borderRadius: 10,
+			textAlign: 'center',
+
+			color: '#fff',
+			backgroundColor: '#66b0ff'
 		},
 		node: {
 			color: dark ? '#183a37' : '#21295c',
@@ -85,7 +118,7 @@ const styles = theme => {
 			backgroundColor: dark ? 'rgb(252, 224, 174)' : '#ffeed8'
 		},
 		section: {
-			height: 335,
+			height: '300px',
 			marginBottom: '2%',
 			color: dark ? '#ffffff' : undefined,
 			backgroundColor: dark ? '#3c3558' : undefined
@@ -155,7 +188,7 @@ export class DashboardView extends Component {
 	};
 
 	render() {
-		const { dashStats, peerStatus, blockActivity, transactionByOrg } = this.props;
+		const { dashStats, blockActivity } = this.props;
 		const { hasDbError, notifications } = this.state;
 		if (hasDbError) {
 			return (
@@ -170,6 +203,7 @@ export class DashboardView extends Component {
 					<h1>
 						Please verify your network configuration, database configuration and try
 						again
+						{window.location.reload(true)}
 					</h1>
 				</div>
 			);
@@ -177,70 +211,62 @@ export class DashboardView extends Component {
 		const { classes } = this.props;
 		return (
 			<div className={classes.background}>
+				<TitleBar titleString="DASHBOARD" />
 				<div className={classes.view}>
-					<Row>
-						<Col sm="12">
-							<Card className={classes.blocks}>
-								<div className={`${classes.statistic} ${classes.vdivide}`}>
-									<Row>
-										<Col sm="4">
-											<Avatar className={`${classes.avatar} ${classes.block}`}>
-												<FontAwesome name="cube" />
-											</Avatar>
-										</Col>
-										<Col sm="4">
-											<h1 className={classes.count}>{dashStats.latestBlock}</h1>
-										</Col>
-									</Row>
-									BLOCKS
-								</div>
-								<div className={`${classes.statistic} ${classes.vdivide}`}>
-									<Row>
-										<Col sm="4">
-											<Avatar className={`${classes.avatar} ${classes.transaction}`}>
-												<FontAwesome name="list-alt" />
-											</Avatar>
-										</Col>
-										<Col sm="4">
-											<h1 className={classes.count}>{dashStats.txCount}</h1>
-										</Col>
-									</Row>
-									TRANSACTIONS
-								</div>
-								<div className={`${classes.statistic} ${classes.vdivide}`}>
-									<Row>
-										<Col sm="4">
-											<Avatar className={`${classes.avatar} ${classes.node}`}>
-												<FontAwesome name="users" />
-											</Avatar>
-										</Col>
-										<Col sm="4">
-											<h1 className={classes.count}>{dashStats.peerCount}</h1>
-										</Col>
-									</Row>
-									NODES
-								</div>
-								<div className={classes.statistic}>
-									<Row>
-										<Col sm="4">
-											<Avatar className={`${classes.avatar} ${classes.chaincode}`}>
-												<FontAwesome name="handshake-o" />
-											</Avatar>
-										</Col>
-										<Col sm="4">
-											<h1 className={classes.count}>{dashStats.chaincodeCount}</h1>
-										</Col>
-									</Row>
-									CHAINCODES
-								</div>
-							</Card>
+					{/* eslint-disable-next-line */}
+					<Row className={(classes.topBar, classes.blocks)}>
+						<Col sm="4" className={classes.count}>
+							<Row>
+								<Col sm="3" className={classes.iconColumn}>
+									<span className={classes.iconSpan}>
+										<FontAwesome name="cubes" />
+									</span>
+								</Col>
+
+								<Col>
+									<div>BLOCKS</div>
+									<div className={classes.dataSpan}>{dashStats.latestBlock}</div>
+								</Col>
+							</Row>
+						</Col>
+						<Col sm="4" className={classes.count}>
+							<Row>
+								<Col sm="3" className={classes.iconColumn}>
+									<span className={classes.iconSpan}>
+										<FontAwesome name="link" />
+									</span>
+								</Col>
+
+								<Col>
+									<div>TRANSACTIONS</div>
+									<div className={classes.dataSpan}>{dashStats.txCount}</div>
+								</Col>
+							</Row>
+						</Col>
+						<Col sm="4" className={classes.count}>
+							<Row>
+								<Col sm="3" className={classes.iconColumn}>
+									<span className={classes.iconSpan}>
+										<FontAwesome name="code" />
+									</span>
+								</Col>
+
+								<Col>
+									<div>CHAINCODES</div>
+									<div className={classes.dataSpan}>{dashStats.chaincodeCount}</div>
+								</Col>
+							</Row>
 						</Col>
 					</Row>
+
 					<Row>
-						<Col sm="6">
+						<Col>
 							<Card className={classes.section}>
-								<PeersHealth peerStatus={peerStatus} />
+								<ChartStats />
 							</Card>
+						</Col>
+
+						<Col>
 							<Card className={classes.section}>
 								<TimelineStream
 									notifications={notifications}
@@ -248,15 +274,20 @@ export class DashboardView extends Component {
 								/>
 							</Card>
 						</Col>
-						<Col sm="6">
-							<Card className={classes.section}>
-								<ChartStats />
-							</Card>
-							<Card className={`${classes.section} ${classes.center}`}>
-								<h5>Transactions by Organization</h5>
-								<hr />
-								<OrgPieChart transactionByOrg={transactionByOrg} />
-							</Card>
+					</Row>
+					<Row>
+						<Col>
+							<Transactions
+								currentChannel={this.props.currentChannel}
+								transactionList={this.props.transactionList}
+								getTransactionList={this.props.getTransactionList}
+								transaction={this.props.transaction}
+								transactionByOrg={this.props.transactionByOrg}
+								getTransactionInfo={this.props.getTransactionInfo}
+								getTransaction={this.props.getTransaction}
+								getTransactionListSearch={this.props.getTransactionListSearch}
+								transactionListSearch={this.props.transactionListSearch}
+							/>
 						</Col>
 					</Row>
 				</div>
