@@ -144,3 +144,44 @@ th {
 .validator {
 	margin: 37px;
 }
+
+.network_status_cell {
+	background-color: #66b0ff;
+	color: white;
+	font-size: 0.9rem;
+	font-weight: 600;
+	display: flex;
+	justify-self: flex-end;
+	align-items: center;
+	height: 30px;
+	padding: 10px;
+	border-radius: 10px;
+	width: 240px;
+}
+
+.network_status_icon {
+	width: 15px;
+	height: 15px;
+	margin-left: 20px;
+	background-color: rgba(70, 225, 70, 1);
+	border-radius: 50%;
+	border: 1px solid white;
+	animation-name: flashingIcon;
+	animation-duration: 1s;
+	animation-iteration-count: infinite;
+	animation-direction: alternate;
+}
+
+@keyframes flashingIcon {
+	0% {
+		background-color: rgba(70, 225, 70, 1);
+	}
+
+	50% {
+		background-color: rgba(70, 225, 70, 1);
+	}
+
+	100% {
+		background-color: rgba(70, 225, 70, 0);
+	}
+}

@@ -38,6 +38,9 @@ const styles = theme => {
 			marginTop: 30,
 			marginBottom: 15
 		},
+		topBarColumn: {
+			padding: 5
+		},
 		background: {
 			backgroundColor: '#f5f7fd'
 		},
@@ -223,7 +226,7 @@ export class DashboardView extends Component {
 									</span>
 								</Col>
 
-								<Col>
+								<Col className={classes.topBarColumn}>
 									<div>BLOCKS</div>
 									<div className={classes.dataSpan}>{dashStats.latestBlock}</div>
 								</Col>
@@ -237,7 +240,7 @@ export class DashboardView extends Component {
 									</span>
 								</Col>
 
-								<Col>
+								<Col className={classes.topBarColumn}>
 									<div>TRANSACTIONS</div>
 									<div className={classes.dataSpan}>{dashStats.txCount}</div>
 								</Col>
@@ -251,7 +254,7 @@ export class DashboardView extends Component {
 									</span>
 								</Col>
 
-								<Col>
+								<Col className={classes.topBarColumn}>
 									<div>CHAINCODES</div>
 									<div className={classes.dataSpan}>{dashStats.chaincodeCount}</div>
 								</Col>

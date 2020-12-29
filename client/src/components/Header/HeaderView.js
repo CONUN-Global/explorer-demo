@@ -26,7 +26,8 @@ import { tableOperations, tableSelectors } from '../../state/redux/tables';
 import { themeSelectors } from '../../state/redux/theme';
 import UsersPanal from '../UsersPanal/UsersPanal';
 import { authOperations } from '../../state/redux/auth';
-import './flashingIcon.css';
+// import './flashingIcon.css';
+import '../../static/css/main.css';
 
 // import Enroll from '../Enroll';
 

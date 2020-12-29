@@ -1,7 +1,7 @@
 .network_status_cell {
 	background-color: #66b0ff;
 	color: white;
-	font-size: 16pt;
+	font-size: 1.05rem;
 	font-weight: 600;
 	display: flex;
 	justify-self: flex-end;
