@@ -45,3 +45,4 @@ crypto-config
 PTE
 dist/*
 app/persistence/fabric/postgreSQL/db/logfile
+INSTRUCTION.md
